@@ -86,5 +86,9 @@
 
     <cache alias="com.yyh.domain.HeadPerson.offices" uses-template="simple"/>
 
+    <cache alias="com.yyh.domain.Law.lawEntries" uses-template="simple"/>
+
+    <cache alias="com.yyh.domain.LawEntry" uses-template="simple"/>
+
     <!-- jhipster-needle-ehcache-add-entry -->
 </config>

@@ -1,5 +1,6 @@
 package com.yyh.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -7,6 +8,8 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -25,18 +28,26 @@ public class Law implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(max = 64)
-    @Column(name = "law_name", length = 64, nullable = false)
-    private String lawName;
+    @Size(max = 256)
+    @Column(name = "law_title", length = 256, nullable = false)
+    private String lawTitle;
 
-    @NotNull
-    @Size(max = 4096)
-    @Column(name = "law_content", length = 4096, nullable = false)
-    private String lawContent;
+    @Size(max = 32)
+    @Column(name = "law_publish_date", length = 32)
+    private String lawPublishDate;
 
-    @Size(max = 1024)
-    @Column(name = "description", length = 1024)
-    private String description;
+    @Size(max = 32)
+    @Column(name = "law_publish_department", length = 32)
+    private String lawPublishDepartment;
+
+    @Size(max = 32)
+    @Column(name = "law_effective_date", length = 32)
+    private String lawEffectiveDate;
+
+    @OneToMany(mappedBy = "law")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<LawEntry> lawEntries = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -46,43 +57,81 @@ public class Law implements Serializable {
         this.id = id;
     }
 
-    public String getLawName() {
-        return lawName;
+    public String getLawTitle() {
+        return lawTitle;
     }
 
-    public Law lawName(String lawName) {
-        this.lawName = lawName;
+    public Law lawTitle(String lawTitle) {
+        this.lawTitle = lawTitle;
         return this;
     }
 
-    public void setLawName(String lawName) {
-        this.lawName = lawName;
+    public void setLawTitle(String lawTitle) {
+        this.lawTitle = lawTitle;
     }
 
-    public String getLawContent() {
-        return lawContent;
+    public String getLawPublishDate() {
+        return lawPublishDate;
     }
 
-    public Law lawContent(String lawContent) {
-        this.lawContent = lawContent;
+    public Law lawPublishDate(String lawPublishDate) {
+        this.lawPublishDate = lawPublishDate;
         return this;
     }
 
-    public void setLawContent(String lawContent) {
-        this.lawContent = lawContent;
+    public void setLawPublishDate(String lawPublishDate) {
+        this.lawPublishDate = lawPublishDate;
     }
 
-    public String getDescription() {
-        return description;
+    public String getLawPublishDepartment() {
+        return lawPublishDepartment;
     }
 
-    public Law description(String description) {
-        this.description = description;
+    public Law lawPublishDepartment(String lawPublishDepartment) {
+        this.lawPublishDepartment = lawPublishDepartment;
         return this;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setLawPublishDepartment(String lawPublishDepartment) {
+        this.lawPublishDepartment = lawPublishDepartment;
+    }
+
+    public String getLawEffectiveDate() {
+        return lawEffectiveDate;
+    }
+
+    public Law lawEffectiveDate(String lawEffectiveDate) {
+        this.lawEffectiveDate = lawEffectiveDate;
+        return this;
+    }
+
+    public void setLawEffectiveDate(String lawEffectiveDate) {
+        this.lawEffectiveDate = lawEffectiveDate;
+    }
+
+    public Set<LawEntry> getLawEntries() {
+        return lawEntries;
+    }
+
+    public Law lawEntries(Set<LawEntry> lawEntries) {
+        this.lawEntries = lawEntries;
+        return this;
+    }
+
+    public Law addLawEntry(LawEntry lawEntry) {
+        lawEntries.add(lawEntry);
+        lawEntry.setLaw(this);
+        return this;
+    }
+
+    public Law removeLawEntry(LawEntry lawEntry) {
+        lawEntries.remove(lawEntry);
+        lawEntry.setLaw(null);
+        return this;
+    }
+
+    public void setLawEntries(Set<LawEntry> lawEntries) {
+        this.lawEntries = lawEntries;
     }
 
     @Override
@@ -109,9 +158,10 @@ public class Law implements Serializable {
     public String toString() {
         return "Law{" +
             "id=" + id +
-            ", lawName='" + lawName + "'" +
-            ", lawContent='" + lawContent + "'" +
-            ", description='" + description + "'" +
+            ", lawTitle='" + lawTitle + "'" +
+            ", lawPublishDate='" + lawPublishDate + "'" +
+            ", lawPublishDepartment='" + lawPublishDepartment + "'" +
+            ", lawEffectiveDate='" + lawEffectiveDate + "'" +
             '}';
     }
 }

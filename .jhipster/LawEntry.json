@@ -1,0 +1,36 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "law",
+            "otherEntityName": "law",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "lawEntryTitle",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 128
+        },
+        {
+            "fieldName": "lawEntryContent",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 2048
+        }
+    ],
+    "changelogDate": "20170204031213",
+    "entityTableName": "law_entry",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceClass"
+}

@@ -1,20 +1,20 @@
 <div>
-    <h2 data-translate="journeyToTheWestApp.law.home.title">Laws</h2>
+    <h2 data-translate="journeyToTheWestApp.lawEntry.home.title">Law Entries</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
-                <button class="btn btn-primary" ui-sref="law.new" >
+                <button class="btn btn-primary" ui-sref="law-entry.new" >
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs"  data-translate="journeyToTheWestApp.law.home.createLabel">
-                        Create new Law
+                    <span class="hidden-xs"  data-translate="journeyToTheWestApp.lawEntry.home.createLabel">
+                        Create new Law Entry
                     </span>
                 </button>
             </div>
             <div class="col-xs-8 no-padding-right">
                 <form name="searchForm" class="form-inline">
                     <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'journeyToTheWestApp.law.home.search' | translate }}">
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'journeyToTheWestApp.lawEntry.home.search' | translate }}">
                         <span  class="input-group-btn width-min" >
                             <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
                                 <span class="glyphicon glyphicon-search"></span>
@@ -36,36 +36,36 @@
             <thead>
                 <tr>
                     <th><span data-translate="global.field.id">ID</span></th>
-                    <th><span data-translate="journeyToTheWestApp.law.lawTitle">Law Title</span></th>
-                    <th><span data-translate="journeyToTheWestApp.law.lawPublishDate">Law Publish Date</span></th>
-                    <th><span data-translate="journeyToTheWestApp.law.lawPublishDepartment">Law Publish Department</span></th>
-                    <th><span data-translate="journeyToTheWestApp.law.lawEffectiveDate">Law Effective Date</span></th>
+                    <th><span data-translate="journeyToTheWestApp.lawEntry.lawEntryTitle">Law Entry Title</span></th>
+                    <th><span data-translate="journeyToTheWestApp.lawEntry.lawEntryContent">Law Entry Content</span></th>
+                    <th><span data-translate="journeyToTheWestApp.lawEntry.law">Law</span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="law in vm.laws track by law.id">
-                    <td><a ui-sref="law-detail({id:law.id})">{{law.id}}</a></td>
-                    <td>{{law.lawTitle}}</td>
-                    <td>{{law.lawPublishDate}}</td>
-                    <td>{{law.lawPublishDepartment}}</td>
-                    <td>{{law.lawEffectiveDate}}</td>
+                <tr ng-repeat="lawEntry in vm.lawEntries track by lawEntry.id">
+                    <td><a ui-sref="law-entry-detail({id:lawEntry.id})">{{lawEntry.id}}</a></td>
+                    <td>{{lawEntry.lawEntryTitle}}</td>
+                    <td>{{lawEntry.lawEntryContent}}</td>
+                    <td>
+                        <a ui-sref="law-detail({id:lawEntry.law.id})">{{lawEntry.law.id}}</a>
+                    </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
-                                    ui-sref="law-detail({id:law.id})"
+                                    ui-sref="law-entry-detail({id:lawEntry.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
-                                    ui-sref="law.edit({id:law.id})"
+                                    ui-sref="law-entry.edit({id:lawEntry.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
                             </button>
                             <button type="submit"
-                                    ui-sref="law.delete({id:law.id})"
+                                    ui-sref="law-entry.delete({id:lawEntry.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>

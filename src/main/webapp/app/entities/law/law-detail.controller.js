@@ -5,9 +5,9 @@
         .module('journeyToTheWestApp')
         .controller('LawDetailController', LawDetailController);
 
-    LawDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Law'];
+    LawDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Law', 'LawEntry'];
 
-    function LawDetailController($scope, $rootScope, $stateParams, previousState, entity, Law) {
+    function LawDetailController($scope, $rootScope, $stateParams, previousState, entity, Law, LawEntry) {
         var vm = this;
 
         vm.law = entity;

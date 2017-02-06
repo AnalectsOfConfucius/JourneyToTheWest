@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.duration._
 
 /**
- * Performance test for the Law entity.
+ * Performance test for the LawEntry entity.
  */
-class LawGatlingTest extends Simulation {
+class LawEntryGatlingTest extends Simulation {
 
     val context: LoggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
     // Log all HTTP requests
@@ -42,7 +42,7 @@ class LawGatlingTest extends Simulation {
         "Authorization" -> "${access_token}"
     )
 
-    val scn = scenario("Test the Law entity")
+    val scn = scenario("Test the LawEntry entity")
         .exec(http("First unauthenticated request")
         .get("/api/account")
         .headers(headers_http)
@@ -60,26 +60,26 @@ class LawGatlingTest extends Simulation {
         .check(status.is(200)))
         .pause(10)
         .repeat(2) {
-            exec(http("Get all laws")
-            .get("/api/laws")
+            exec(http("Get all lawEntries")
+            .get("/api/law-entries")
             .headers(headers_http_authenticated)
             .check(status.is(200)))
             .pause(10 seconds, 20 seconds)
-            .exec(http("Create new law")
-            .post("/api/laws")
+            .exec(http("Create new lawEntry")
+            .post("/api/law-entries")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "lawTitle":"SAMPLE_TEXT", "lawPublishDate":"SAMPLE_TEXT", "lawPublishDepartment":"SAMPLE_TEXT", "lawEffectiveDate":"SAMPLE_TEXT"}""")).asJSON
+            .body(StringBody("""{"id":null, "lawEntryTitle":"SAMPLE_TEXT", "lawEntryContent":"SAMPLE_TEXT"}""")).asJSON
             .check(status.is(201))
-            .check(headerRegex("Location", "(.*)").saveAs("new_law_url"))).exitHereIfFailed
+            .check(headerRegex("Location", "(.*)").saveAs("new_lawEntry_url"))).exitHereIfFailed
             .pause(10)
             .repeat(5) {
-                exec(http("Get created law")
-                .get("${new_law_url}")
+                exec(http("Get created lawEntry")
+                .get("${new_lawEntry_url}")
                 .headers(headers_http_authenticated))
                 .pause(10)
             }
-            .exec(http("Delete created law")
-            .delete("${new_law_url}")
+            .exec(http("Delete created lawEntry")
+            .delete("${new_lawEntry_url}")
             .headers(headers_http_authenticated))
             .pause(10)
         }

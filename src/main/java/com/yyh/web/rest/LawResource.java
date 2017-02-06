@@ -2,9 +2,7 @@ package com.yyh.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.yyh.domain.Law;
-
-import com.yyh.repository.LawRepository;
-import com.yyh.repository.search.LawSearchRepository;
+import com.yyh.service.LawService;
 import com.yyh.web.rest.util.HeaderUtil;
 
 import org.slf4j.Logger;
@@ -35,10 +33,7 @@ public class LawResource {
     private final Logger log = LoggerFactory.getLogger(LawResource.class);
         
     @Inject
-    private LawRepository lawRepository;
-
-    @Inject
-    private LawSearchRepository lawSearchRepository;
+    private LawService lawService;
 
     /**
      * POST  /laws : Create a new law.
@@ -54,8 +49,7 @@ public class LawResource {
         if (law.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("law", "idexists", "A new law cannot already have an ID")).body(null);
         }
-        Law result = lawRepository.save(law);
-        lawSearchRepository.save(result);
+        Law result = lawService.save(law);
         return ResponseEntity.created(new URI("/api/laws/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("law", result.getId().toString()))
             .body(result);
@@ -77,8 +71,7 @@ public class LawResource {
         if (law.getId() == null) {
             return createLaw(law);
         }
-        Law result = lawRepository.save(law);
-        lawSearchRepository.save(result);
+        Law result = lawService.save(law);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("law", law.getId().toString()))
             .body(result);
@@ -93,8 +86,7 @@ public class LawResource {
     @Timed
     public List<Law> getAllLaws() {
         log.debug("REST request to get all Laws");
-        List<Law> laws = lawRepository.findAll();
-        return laws;
+        return lawService.findAll();
     }
 
     /**
@@ -107,7 +99,7 @@ public class LawResource {
     @Timed
     public ResponseEntity<Law> getLaw(@PathVariable Long id) {
         log.debug("REST request to get Law : {}", id);
-        Law law = lawRepository.findOne(id);
+        Law law = lawService.findOne(id);
         return Optional.ofNullable(law)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -125,8 +117,7 @@ public class LawResource {
     @Timed
     public ResponseEntity<Void> deleteLaw(@PathVariable Long id) {
         log.debug("REST request to delete Law : {}", id);
-        lawRepository.delete(id);
-        lawSearchRepository.delete(id);
+        lawService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("law", id.toString())).build();
     }
 
@@ -141,9 +132,7 @@ public class LawResource {
     @Timed
     public List<Law> searchLaws(@RequestParam String query) {
         log.debug("REST request to search Laws for query {}", query);
-        return StreamSupport
-            .stream(lawSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+        return lawService.search(query);
     }
 
 

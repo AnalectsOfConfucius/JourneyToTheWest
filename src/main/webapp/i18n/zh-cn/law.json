@@ -16,9 +16,11 @@
             "detail": {
                 "title": "Law"
             },
-            "lawName": "Law Name",
-            "lawContent": "Law Content",
-            "description": "Description"
+            "lawTitle": "Law Title",
+            "lawPublishDate": "Law Publish Date",
+            "lawPublishDepartment": "Law Publish Department",
+            "lawEffectiveDate": "Law Effective Date",
+            "lawEntry": "Law Entry"
         }
     }
 }

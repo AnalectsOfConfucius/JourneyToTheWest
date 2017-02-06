@@ -2,9 +2,9 @@
 
 describe('Controller Tests', function() {
 
-    describe('Law Management Detail Controller', function() {
+    describe('LawEntry Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockLaw, MockLawEntry;
+        var MockEntity, MockPreviousState, MockLawEntry, MockLaw;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -12,8 +12,8 @@ describe('Controller Tests', function() {
             $scope = $rootScope.$new();
             MockEntity = jasmine.createSpy('MockEntity');
             MockPreviousState = jasmine.createSpy('MockPreviousState');
-            MockLaw = jasmine.createSpy('MockLaw');
             MockLawEntry = jasmine.createSpy('MockLawEntry');
+            MockLaw = jasmine.createSpy('MockLaw');
             
 
             var locals = {
@@ -21,18 +21,18 @@ describe('Controller Tests', function() {
                 '$rootScope': $rootScope,
                 'entity': MockEntity,
                 'previousState': MockPreviousState,
-                'Law': MockLaw,
-                'LawEntry': MockLawEntry
+                'LawEntry': MockLawEntry,
+                'Law': MockLaw
             };
             createController = function() {
-                $injector.get('$controller')("LawDetailController", locals);
+                $injector.get('$controller')("LawEntryDetailController", locals);
             };
         }));
 
 
         describe('Root Scope Listening', function() {
             it('Unregisters root scope listener upon scope destruction', function() {
-                var eventType = 'journeyToTheWestApp:lawUpdate';
+                var eventType = 'journeyToTheWestApp:lawEntryUpdate';
 
                 createController();
                 expect($rootScope.$$listenerCount[eventType]).toEqual(1);

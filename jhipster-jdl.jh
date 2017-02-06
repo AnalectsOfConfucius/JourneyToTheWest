@@ -26,6 +26,18 @@ entity Company {
     description String maxlength(4069)
 }
 
+entity Law {
+    lawTitle String required maxlength(256),
+    lawPublishDate String maxlength(32),
+    lawPublishDepartment String maxlength(32),
+    lawEffectiveDate String maxlength(32)
+}
+
+entity LawEntry {
+    lawEntryTitle String required maxlength(128),
+    lawEntryContent String required maxlength(2048)
+}
+
 entity TaskProject {
     taskProjectName String required maxlength(64),
     description String maxlength(1024)
@@ -119,12 +131,6 @@ entity IndustryType {
     typeName String required maxlength(32)
 }
 
-entity Law {
-    lawName String required maxlength(64),
-    lawContent String required maxlength(4096),
-    description String maxlength(1024)
-}
-
 relationship OneToOne {
     Punish{department} to LawenforceDepartment,
     Manager{managerUser} to User,
@@ -144,7 +150,8 @@ relationship OneToMany {
     Company{doubleRandomResult} to DoubleRandomResult{company},
     Company{punish} to Punish{company},
     TaskProject{task} to Task{taskProject},
-    DoubleRandom{doubleRandomResult} to DoubleRandomResult{doubleRandom}
+    DoubleRandom{doubleRandomResult} to DoubleRandomResult{doubleRandom},
+    Law{lawEntry} to LawEntry{law}
 }
 
 relationship ManyToOne {
@@ -155,6 +162,8 @@ relationship ManyToOne {
 }
 
 service Manager with serviceClass
+service Law with serviceClass
+service LawEntry with serviceClass
 service Task with serviceClass
 service TaskProject with serviceClass
 service Company with serviceClass

@@ -4,6 +4,7 @@ import com.yyh.JourneyToTheWestApp;
 
 import com.yyh.domain.Law;
 import com.yyh.repository.LawRepository;
+import com.yyh.service.LawService;
 import com.yyh.repository.search.LawSearchRepository;
 
 import org.junit.Before;
@@ -38,17 +39,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = JourneyToTheWestApp.class)
 public class LawResourceIntTest {
 
-    private static final String DEFAULT_LAW_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_LAW_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_LAW_TITLE = "AAAAAAAAAA";
+    private static final String UPDATED_LAW_TITLE = "BBBBBBBBBB";
 
-    private static final String DEFAULT_LAW_CONTENT = "AAAAAAAAAA";
-    private static final String UPDATED_LAW_CONTENT = "BBBBBBBBBB";
+    private static final String DEFAULT_LAW_PUBLISH_DATE = "AAAAAAAAAA";
+    private static final String UPDATED_LAW_PUBLISH_DATE = "BBBBBBBBBB";
 
-    private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
-    private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
+    private static final String DEFAULT_LAW_PUBLISH_DEPARTMENT = "AAAAAAAAAA";
+    private static final String UPDATED_LAW_PUBLISH_DEPARTMENT = "BBBBBBBBBB";
+
+    private static final String DEFAULT_LAW_EFFECTIVE_DATE = "AAAAAAAAAA";
+    private static final String UPDATED_LAW_EFFECTIVE_DATE = "BBBBBBBBBB";
 
     @Inject
     private LawRepository lawRepository;
+
+    @Inject
+    private LawService lawService;
 
     @Inject
     private LawSearchRepository lawSearchRepository;
@@ -70,8 +77,7 @@ public class LawResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         LawResource lawResource = new LawResource();
-        ReflectionTestUtils.setField(lawResource, "lawSearchRepository", lawSearchRepository);
-        ReflectionTestUtils.setField(lawResource, "lawRepository", lawRepository);
+        ReflectionTestUtils.setField(lawResource, "lawService", lawService);
         this.restLawMockMvc = MockMvcBuilders.standaloneSetup(lawResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -85,9 +91,10 @@ public class LawResourceIntTest {
      */
     public static Law createEntity(EntityManager em) {
         Law law = new Law()
-                .lawName(DEFAULT_LAW_NAME)
-                .lawContent(DEFAULT_LAW_CONTENT)
-                .description(DEFAULT_DESCRIPTION);
+                .lawTitle(DEFAULT_LAW_TITLE)
+                .lawPublishDate(DEFAULT_LAW_PUBLISH_DATE)
+                .lawPublishDepartment(DEFAULT_LAW_PUBLISH_DEPARTMENT)
+                .lawEffectiveDate(DEFAULT_LAW_EFFECTIVE_DATE);
         return law;
     }
 
@@ -113,9 +120,10 @@ public class LawResourceIntTest {
         List<Law> lawList = lawRepository.findAll();
         assertThat(lawList).hasSize(databaseSizeBeforeCreate + 1);
         Law testLaw = lawList.get(lawList.size() - 1);
-        assertThat(testLaw.getLawName()).isEqualTo(DEFAULT_LAW_NAME);
-        assertThat(testLaw.getLawContent()).isEqualTo(DEFAULT_LAW_CONTENT);
-        assertThat(testLaw.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testLaw.getLawTitle()).isEqualTo(DEFAULT_LAW_TITLE);
+        assertThat(testLaw.getLawPublishDate()).isEqualTo(DEFAULT_LAW_PUBLISH_DATE);
+        assertThat(testLaw.getLawPublishDepartment()).isEqualTo(DEFAULT_LAW_PUBLISH_DEPARTMENT);
+        assertThat(testLaw.getLawEffectiveDate()).isEqualTo(DEFAULT_LAW_EFFECTIVE_DATE);
 
         // Validate the Law in ElasticSearch
         Law lawEs = lawSearchRepository.findOne(testLaw.getId());
@@ -144,28 +152,10 @@ public class LawResourceIntTest {
 
     @Test
     @Transactional
-    public void checkLawNameIsRequired() throws Exception {
+    public void checkLawTitleIsRequired() throws Exception {
         int databaseSizeBeforeTest = lawRepository.findAll().size();
         // set the field null
-        law.setLawName(null);
-
-        // Create the Law, which fails.
-
-        restLawMockMvc.perform(post("/api/laws")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(law)))
-            .andExpect(status().isBadRequest());
-
-        List<Law> lawList = lawRepository.findAll();
-        assertThat(lawList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkLawContentIsRequired() throws Exception {
-        int databaseSizeBeforeTest = lawRepository.findAll().size();
-        // set the field null
-        law.setLawContent(null);
+        law.setLawTitle(null);
 
         // Create the Law, which fails.
 
@@ -189,9 +179,10 @@ public class LawResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(law.getId().intValue())))
-            .andExpect(jsonPath("$.[*].lawName").value(hasItem(DEFAULT_LAW_NAME.toString())))
-            .andExpect(jsonPath("$.[*].lawContent").value(hasItem(DEFAULT_LAW_CONTENT.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
+            .andExpect(jsonPath("$.[*].lawTitle").value(hasItem(DEFAULT_LAW_TITLE.toString())))
+            .andExpect(jsonPath("$.[*].lawPublishDate").value(hasItem(DEFAULT_LAW_PUBLISH_DATE.toString())))
+            .andExpect(jsonPath("$.[*].lawPublishDepartment").value(hasItem(DEFAULT_LAW_PUBLISH_DEPARTMENT.toString())))
+            .andExpect(jsonPath("$.[*].lawEffectiveDate").value(hasItem(DEFAULT_LAW_EFFECTIVE_DATE.toString())));
     }
 
     @Test
@@ -205,9 +196,10 @@ public class LawResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(law.getId().intValue()))
-            .andExpect(jsonPath("$.lawName").value(DEFAULT_LAW_NAME.toString()))
-            .andExpect(jsonPath("$.lawContent").value(DEFAULT_LAW_CONTENT.toString()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()));
+            .andExpect(jsonPath("$.lawTitle").value(DEFAULT_LAW_TITLE.toString()))
+            .andExpect(jsonPath("$.lawPublishDate").value(DEFAULT_LAW_PUBLISH_DATE.toString()))
+            .andExpect(jsonPath("$.lawPublishDepartment").value(DEFAULT_LAW_PUBLISH_DEPARTMENT.toString()))
+            .andExpect(jsonPath("$.lawEffectiveDate").value(DEFAULT_LAW_EFFECTIVE_DATE.toString()));
     }
 
     @Test
@@ -222,16 +214,17 @@ public class LawResourceIntTest {
     @Transactional
     public void updateLaw() throws Exception {
         // Initialize the database
-        lawRepository.saveAndFlush(law);
-        lawSearchRepository.save(law);
+        lawService.save(law);
+
         int databaseSizeBeforeUpdate = lawRepository.findAll().size();
 
         // Update the law
         Law updatedLaw = lawRepository.findOne(law.getId());
         updatedLaw
-                .lawName(UPDATED_LAW_NAME)
-                .lawContent(UPDATED_LAW_CONTENT)
-                .description(UPDATED_DESCRIPTION);
+                .lawTitle(UPDATED_LAW_TITLE)
+                .lawPublishDate(UPDATED_LAW_PUBLISH_DATE)
+                .lawPublishDepartment(UPDATED_LAW_PUBLISH_DEPARTMENT)
+                .lawEffectiveDate(UPDATED_LAW_EFFECTIVE_DATE);
 
         restLawMockMvc.perform(put("/api/laws")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -242,9 +235,10 @@ public class LawResourceIntTest {
         List<Law> lawList = lawRepository.findAll();
         assertThat(lawList).hasSize(databaseSizeBeforeUpdate);
         Law testLaw = lawList.get(lawList.size() - 1);
-        assertThat(testLaw.getLawName()).isEqualTo(UPDATED_LAW_NAME);
-        assertThat(testLaw.getLawContent()).isEqualTo(UPDATED_LAW_CONTENT);
-        assertThat(testLaw.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testLaw.getLawTitle()).isEqualTo(UPDATED_LAW_TITLE);
+        assertThat(testLaw.getLawPublishDate()).isEqualTo(UPDATED_LAW_PUBLISH_DATE);
+        assertThat(testLaw.getLawPublishDepartment()).isEqualTo(UPDATED_LAW_PUBLISH_DEPARTMENT);
+        assertThat(testLaw.getLawEffectiveDate()).isEqualTo(UPDATED_LAW_EFFECTIVE_DATE);
 
         // Validate the Law in ElasticSearch
         Law lawEs = lawSearchRepository.findOne(testLaw.getId());
@@ -273,8 +267,8 @@ public class LawResourceIntTest {
     @Transactional
     public void deleteLaw() throws Exception {
         // Initialize the database
-        lawRepository.saveAndFlush(law);
-        lawSearchRepository.save(law);
+        lawService.save(law);
+
         int databaseSizeBeforeDelete = lawRepository.findAll().size();
 
         // Get the law
@@ -295,16 +289,16 @@ public class LawResourceIntTest {
     @Transactional
     public void searchLaw() throws Exception {
         // Initialize the database
-        lawRepository.saveAndFlush(law);
-        lawSearchRepository.save(law);
+        lawService.save(law);
 
         // Search the law
         restLawMockMvc.perform(get("/api/_search/laws?query=id:" + law.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(law.getId().intValue())))
-            .andExpect(jsonPath("$.[*].lawName").value(hasItem(DEFAULT_LAW_NAME.toString())))
-            .andExpect(jsonPath("$.[*].lawContent").value(hasItem(DEFAULT_LAW_CONTENT.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
+            .andExpect(jsonPath("$.[*].lawTitle").value(hasItem(DEFAULT_LAW_TITLE.toString())))
+            .andExpect(jsonPath("$.[*].lawPublishDate").value(hasItem(DEFAULT_LAW_PUBLISH_DATE.toString())))
+            .andExpect(jsonPath("$.[*].lawPublishDepartment").value(hasItem(DEFAULT_LAW_PUBLISH_DEPARTMENT.toString())))
+            .andExpect(jsonPath("$.[*].lawEffectiveDate").value(hasItem(DEFAULT_LAW_EFFECTIVE_DATE.toString())));
     }
 }

@@ -3,17 +3,17 @@
 
     angular
         .module('journeyToTheWestApp')
-        .controller('LawDialogController', LawDialogController);
+        .controller('LawEntryDialogController', LawEntryDialogController);
 
-    LawDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Law', 'LawEntry'];
+    LawEntryDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'LawEntry', 'Law'];
 
-    function LawDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Law, LawEntry) {
+    function LawEntryDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, LawEntry, Law) {
         var vm = this;
 
-        vm.law = entity;
+        vm.lawEntry = entity;
         vm.clear = clear;
         vm.save = save;
-        vm.lawentries = LawEntry.query();
+        vm.laws = Law.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
@@ -25,15 +25,15 @@
 
         function save () {
             vm.isSaving = true;
-            if (vm.law.id !== null) {
-                Law.update(vm.law, onSaveSuccess, onSaveError);
+            if (vm.lawEntry.id !== null) {
+                LawEntry.update(vm.lawEntry, onSaveSuccess, onSaveError);
             } else {
-                Law.save(vm.law, onSaveSuccess, onSaveError);
+                LawEntry.save(vm.lawEntry, onSaveSuccess, onSaveError);
             }
         }
 
         function onSaveSuccess (result) {
-            $scope.$emit('journeyToTheWestApp:lawUpdate', result);
+            $scope.$emit('journeyToTheWestApp:lawEntryUpdate', result);
             $uibModalInstance.close(result);
             vm.isSaving = false;
         }

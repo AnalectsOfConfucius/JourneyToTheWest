@@ -1,0 +1,24 @@
+{
+    "journeyToTheWestApp": {
+        "lawEntry" : {
+            "home": {
+                "title": "Law Entries",
+                "createLabel": "Create a new Law Entry",
+                "createOrEditLabel": "Create or edit a Law Entry",
+                "search": "Search for Law Entry"
+            },
+            "created": "A new Law Entry is created with identifier {{ param }}",
+            "updated": "A Law Entry is updated with identifier {{ param }}",
+            "deleted": "A Law Entry is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Law Entry {{ id }}?"
+            },
+            "detail": {
+                "title": "Law Entry"
+            },
+            "lawEntryTitle": "Law Entry Title",
+            "lawEntryContent": "Law Entry Content",
+            "law": "Law"
+        }
+    }
+}

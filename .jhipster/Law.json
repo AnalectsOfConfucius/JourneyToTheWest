@@ -1,37 +1,51 @@
 {
     "fluentMethods": true,
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "lawEntry",
+            "otherEntityName": "lawEntry",
+            "otherEntityRelationshipName": "law"
+        }
+    ],
     "fields": [
         {
-            "fieldName": "lawName",
+            "fieldName": "lawTitle",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required",
                 "maxlength"
             ],
-            "fieldValidateRulesMaxlength": 64
+            "fieldValidateRulesMaxlength": 256
         },
         {
-            "fieldName": "lawContent",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": 4096
-        },
-        {
-            "fieldName": "description",
+            "fieldName": "lawPublishDate",
             "fieldType": "String",
             "fieldValidateRules": [
                 "maxlength"
             ],
-            "fieldValidateRulesMaxlength": 1024
+            "fieldValidateRulesMaxlength": 32
+        },
+        {
+            "fieldName": "lawPublishDepartment",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 32
+        },
+        {
+            "fieldName": "lawEffectiveDate",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 32
         }
     ],
     "changelogDate": "20170108064745",
     "entityTableName": "law",
     "dto": "no",
     "pagination": "no",
-    "service": "no"
+    "service": "serviceClass"
 }
